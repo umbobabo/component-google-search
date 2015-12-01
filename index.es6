@@ -2,7 +2,7 @@ import React from 'react';
 import Icon from '@economist/component-icon';
 import Loading from '@economist/component-loading';
 import promisescript from 'promisescript';
-/* eslint-disable no-undef, no-underscore-dangle, id-match, id-length */
+/* eslint-disable no-undef, no-underscore-dangle, id-match, id-length, no-console */
 export default class Search extends React.Component {
 
   static get propTypes() {
@@ -14,6 +14,9 @@ export default class Search extends React.Component {
       queryParameterName: React.PropTypes.string,
       language: React.PropTypes.string,
       resultsUrl: React.PropTypes.string,
+      cx: React.PropTypes.string,
+      searchLabel: React.PropTypes.string,
+      iconsSize: React.PropTypes.string,
     };
   }
 
@@ -28,20 +31,20 @@ export default class Search extends React.Component {
       queryParameterName: 'ss',
       language: 'en',
       resultsUrl: 'http://www.economist.com/search/',
+      cx: '013751040265774567329:pqjb-wvrj-q',
+      searchLabel: 'Search',
+      iconsSize: '28',
+      googleScriptURL: 'www.google.com/cse2/cse.js',
     };
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      javascritEnabled: true,
       statusClassName: 'search--close',
       searchTerm: '',
+      fallbackHTML: '',
     };
-  }
-
-  componentDidMount() {
-    this.hideNoJSForm();
   }
 
   showSearchFieldHandler(e) {
@@ -50,11 +53,14 @@ export default class Search extends React.Component {
     this.setState({
       statusClassName: 'search--loading',
     });
-    return this.ensureScriptHasLoaded().then(() => (
+    this.ensureScriptHasLoaded().then(() => {
       this.setState({
         statusClassName: 'search--open',
-      })
-    ));
+      });
+      this.focusSearchField();
+    });
+    // Required for preventDefault on Safari.
+    return false;
   }
 
   clearSearchField() {
@@ -63,6 +69,10 @@ export default class Search extends React.Component {
       statusClassName: 'search--close',
     });
     document.querySelector('.search input.gsc-input').value = '';
+  }
+
+  focusSearchField() {
+    document.querySelector('.search input.gsc-input').focus();
   }
 
   ensureScriptHasLoaded() {
@@ -82,6 +92,7 @@ export default class Search extends React.Component {
             resultsUrl: self.props.resultsUrl,
           },
         });
+      self.focusSearchField();
     }
 
     function myCallback() {
@@ -97,23 +108,20 @@ export default class Search extends React.Component {
         parsetags: 'explicit',
         callback: myCallback,
       };
-      const cx = '013751040265774567329:pqjb-wvrj-q';
       const protocol = (document.location.protocol) === 'https:' ? 'https:' : 'http:';
-      const src = `${protocol}//www.google.com/cse/cse.js?cx=${cx}`;
+      const src = `${protocol}//${this.props.googleScriptURL}?cx=${this.props.cx}`;
       this.script = promisescript({
         url: src,
         type: 'script',
       }).catch((e) => {
-        console.error('An error loading or executing Google Custom Search: ', e.message);
+        // Let provide a fallback
+        this.setState({
+          fallbackHTML: `<b>Cool</b>`,
+        });
+        console.error('An error occurs loading or executing Google Custom Search: ', e.message);
       });
     }
     return this.script;
-  }
-
-  hideNoJSForm() {
-    this.setState({
-      javascritEnabled: true,
-    });
   }
 
   render() {
@@ -125,15 +133,18 @@ export default class Search extends React.Component {
                 >
                   <Icon icon="magnifier"
                     color="white"
-                    size="28"
+                    size={this.props.iconsSize}
                   />
                 </a>
-                <div className="search__search-box" id="google-search-box"></div>
+                <div
+                  className="search__search-box"
+                  id="google-search-box"
+                >{this.state.fallbackHTML}</div>
                 <a className="search__search-label"
                   onClick={this.showSearchFieldHandler.bind(this)}
                   href={this.props.resultsUrl}
                 >
-                  Search
+                  {this.props.searchLabel}
                 </a>
                 <div className="search__preloader"><Loading /></div>
                 <a className="search__search-close"
@@ -141,7 +152,7 @@ export default class Search extends React.Component {
                 >
                   <Icon
                     icon="close"
-                    size="28"
+                    size={this.props.iconsSize}
                   />
                 </a>
               </div>

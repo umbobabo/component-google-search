@@ -2,9 +2,9 @@
 @import "@economist/component-typography";
 @import "@economist/component-loading";
 
-:root {
+/*:root {
   --search-speed-animation: 0.1s;
-}
+}*/
 
 .search {
   display: table;
@@ -16,7 +16,11 @@
   right: 0;
   height: 100%;
   border-collapse: collapse;
-  margin-right: 0.5em;
+  left: auto;
+}
+
+.search .error--message {
+  color: var(--color-economist);
 }
 
 .search__show-field-group {
@@ -36,26 +40,28 @@
 .search__search-label,
 .search__search-close,
 .search__preloader {
-  width: 50px;
+  min-width: 50px;
   box-sizing: border-box;
+  text-align: center;
 }
 
 .search--open .search__search-box {
   width: 100%;
 }
-
+.search--close .search__search-box,
 .search--close .search__search-close {
   display: none;
 }
 
 .search--close {
   background: var(--search--close__background, var(--color-kiev));
-  transition: left var(--search-speed-animation);
+  /*transition: left var(--search-speed-animation);*/
 }
 
 .search--open {
   background: var(--search--open__background, var(--color-thimphu));
-  transition: left var(--search-speed-animation);
+  /*transition: left var(--search-speed-animation);*/
+  left: 0;
 }
 
 .search--close #___gcse_0 {
@@ -72,13 +78,14 @@ td.gsc-input {
 
 .search--close .search__search-box {
   width: 0px;
-  transition: width var(--search-speed-animation);
+  /*transition: width var(--search-speed-animation);*/
   overflow: hidden;
+  background: none;
 }
 
 .search--open .search__search-box {
-  width: 1000px;
-  transition: width var(--search-speed-animation);
+  width: 100%;
+  /*transition: width var(--search-speed-animation);*/
 }
 
 .search__search-label,
@@ -100,17 +107,17 @@ input.gsc-input input {
 
 .search--open .search__search-close {
   background: var(--searc--open__search-close__background, var(--color-kiev));
-  padding: 1em;
 }
 
-.search--open .Icon-magnifier use{
+.search--open .Icon-magnifier,
+.search--open .Icon-magnifier use {
   fill: var(--search__icon-magnifier-open-color,  var(--color-kiev));
 }
 
+.search__search-close .Icon-close,
 .search__search-close .Icon-close use {
   fill: var(--search__icon-magnifier-close-color,  var(--color-thimphu));
 }
-
 
 .gsc-input {
   width: 100%;
@@ -161,4 +168,10 @@ input.gsc-input {
   top: 0;
   bottom: 0;
   font-size: 0.4em;
+}
+
+@media (width<=767px){
+  .search__search-label {
+    display: none;
+  }
 }
