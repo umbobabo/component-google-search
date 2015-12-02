@@ -88,8 +88,7 @@ td.gsc-input {
   /*transition: width var(--search-speed-animation);*/
 }
 
-.search__search-label,
-input.gsc-input input {
+.search__search-label {
   font-size: var(--search__search-label__font-size, var(--text-size-step--1));
   height: var(--search__search-label__height, var(--text-size-step--1));
 }
@@ -130,14 +129,12 @@ input.gsc-input input {
   float: left;
 }
 
-input.gsc-input,
-input.gsc-input input {
-  border: none !important;
-}
-
 input.gsc-input {
+  border: none !important;
   color: var(--search__input-color, var(--color-kiev));
   padding: 0 !important;
+  outline: none;
+  font-size: 1em;
 }
 
 .gsc-search-button,

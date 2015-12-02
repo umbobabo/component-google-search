@@ -3,7 +3,7 @@ import Icon from '@economist/component-icon';
 import Loading from '@economist/component-loading';
 import promisescript from 'promisescript';
 /* eslint-disable no-undef, no-underscore-dangle, id-match, id-length, no-console */
-export default class Search extends React.Component {
+export default class GoogleSearch extends React.Component {
 
   static get propTypes() {
     return {
@@ -17,6 +17,7 @@ export default class Search extends React.Component {
       cx: React.PropTypes.string,
       searchLabel: React.PropTypes.string,
       iconsSize: React.PropTypes.string,
+      googleScriptUrl: React.PropTypes.string,
     };
   }
 
@@ -34,7 +35,7 @@ export default class Search extends React.Component {
       cx: '013751040265774567329:pqjb-wvrj-q',
       searchLabel: 'Search',
       iconsSize: '28',
-      googleScriptURL: 'www.google.com/cse2/cse.js',
+      googleScriptUrl: 'www.google.com/cse/cse.js',
     };
   }
 
@@ -109,14 +110,30 @@ export default class Search extends React.Component {
         callback: myCallback,
       };
       const protocol = (document.location.protocol) === 'https:' ? 'https:' : 'http:';
-      const src = `${protocol}//${this.props.googleScriptURL}?cx=${this.props.cx}`;
+      const src = `${protocol}//${this.props.googleScriptUrl}?cx=${this.props.cx}`;
       this.script = promisescript({
         url: src,
         type: 'script',
       }).catch((e) => {
-        // Let provide a fallback
+        // Let provide a fallback if we can't load the GCS script.
+        const fallbackHTML = `
+            <form acceptCharset="UTF-8" method="GET"
+              id="search-theme-form" action="${this.props.resultsUrl}"
+              class="gsc-input"
+            >
+              <input
+                type="text" maxLength="128" name="${this.props.queryParameterName}"
+                id="edit-search-theme-form-1"
+                value=""
+                title="Enter the terms you wish to search for."
+                class="gsc-input"
+              />
+              <input type="hidden" name="cx"
+                value="${this.props.cx}" id="edit-cx"
+              />
+            </form>`;
         this.setState({
-          fallbackHTML: `<b>Cool</b>`,
+          fallbackHTML,
         });
         console.error('An error occurs loading or executing Google Custom Search: ', e.message);
       });
@@ -139,7 +156,12 @@ export default class Search extends React.Component {
                 <div
                   className="search__search-box"
                   id="google-search-box"
-                >{this.state.fallbackHTML}</div>
+                >
+                  <div className="fallback"
+                    dangerouslySetInnerHTML={{__html: this.state.fallbackHTML}}
+                  >
+                  </div>
+                </div>
                 <a className="search__search-label"
                   onClick={this.showSearchFieldHandler.bind(this)}
                   href={this.props.resultsUrl}

@@ -1,3 +1,3 @@
-# component-search
+# component-google-search
 
-Component Search provides a searchable field with autocompletition.
+Search component based on Google Custom Search.

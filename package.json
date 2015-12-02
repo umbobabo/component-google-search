@@ -1,16 +1,16 @@
 {
-  "name": "@economist/component-search",
+  "name": "@economist/component-google-search",
   "version": "1.0.0",
-  "description": "A search field with autocompletition",
+  "description": "A search field with autocompletition based on GCS",
   "author": "The Economist (http://economist.com)",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/economist-components/component-search.git"
+    "url": "git+https://github.com/economist-components/component-google-search.git"
   },
-  "homepage": "https://github.com/economist-components/component-search#readme",
+  "homepage": "https://github.com/economist-components/component-google-search#readme",
   "bugs": {
-    "url": "https://github.com/economist-components/component-search/issues"
+    "url": "https://github.com/economist-components/component-google-search/issues"
   },
   "main": "index.js",
   "files": [
@@ -75,7 +75,8 @@
       },
       {
         "contents": "if(document.getElementById('mocha')){mocha.checkLeaks();mocha.run();}"
-      },{
+      },
+      {
         "contents": "svg4everybody();"
       }
     ],
@@ -164,6 +165,7 @@
     "parallelshell": "^2.0.0",
     "pre-commit": "^1.0.10",
     "react": "^0.14.0",
+    "react-addons-test-utils": "^0.14.3",
     "svg4everybody": "^2.0.1",
     "watchify": "^3.4.0"
   },

@@ -1,5 +1,5 @@
 import React from 'react';
-import Search from './index';
+import GoogleSearch from './index';
 
 export default(
   <div className="search__example-container">
@@ -7,7 +7,7 @@ export default(
       <tbody>
         <tr>
           <td style={{ width: '100%' }}>Just some placeholder text</td>
-          <td><Search /></td>
+          <td><GoogleSearch /></td>
         </tr>
       </tbody>
     </table>
