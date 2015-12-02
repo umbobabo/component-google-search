@@ -6,7 +6,7 @@ export default(
     <table>
       <tbody>
         <tr>
-          <td style={{ width: '100%' }}>Just some placeholder text</td>
+          <td style={{ width: '100%', color: 'white' }}>Just some placeholder text</td>
           <td><GoogleSearch /></td>
         </tr>
       </tbody>

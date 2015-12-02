@@ -113,6 +113,11 @@ td.gsc-input {
   fill: var(--search__icon-magnifier-open-color,  var(--color-kiev));
 }
 
+.search--open .search__magnifier {
+  min-width: 50px;
+  text-align: center;
+}
+
 .search__search-close .Icon-close,
 .search__search-close .Icon-close use {
   fill: var(--search__icon-magnifier-close-color,  var(--color-thimphu));
@@ -170,5 +175,9 @@ input.gsc-input {
 @media (width<=767px){
   .search__search-label {
     display: none;
+  }
+  .search__magnifier {
+    min-width: 50px;
+    text-align: center;
   }
 }
