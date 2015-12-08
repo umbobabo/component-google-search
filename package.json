@@ -137,7 +137,6 @@
     "@economist/component-palette": "^1.3.0",
     "@economist/component-typography": "^1.5.0",
     "promisescript": "^1.1.0",
-    "react": "^0.14.3",
     "react-select": "^0.9.1"
   },
   "devDependencies": {
