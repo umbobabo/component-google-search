@@ -48,7 +48,7 @@ describe(`A Google Search component`, () => {
       searchPreloader.props.className.should.equal('search__preloader');
       searchSearchClose.props.className.should.equal('search__search-close');
       searchSearchClose.type.should.equal('a');
-      searchSearchClose.props.onClick.name.should.equal('bound clearSearchField');
+      searchSearchClose.props.onClick.should.be.a('function');
     });
   });
 });
