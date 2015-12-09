@@ -157,6 +157,7 @@ export default class GoogleSearch extends React.Component {
                   className="search__search-box"
                   id="google-search-box"
                 >
+                  <div className="search__preloader"><Loading /></div>
                   <div className="fallback"
                     dangerouslySetInnerHTML={{__html: this.state.fallbackHTML}}
                   >
@@ -168,7 +169,6 @@ export default class GoogleSearch extends React.Component {
                 >
                   {this.props.searchLabel}
                 </a>
-                <div className="search__preloader"><Loading /></div>
                 <a className="search__search-close"
                   onClick={this.clearSearchField.bind(this)}
                 >
