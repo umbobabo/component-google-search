@@ -32,8 +32,8 @@ describe(`A Google Search component`, () => {
       const searchMagnifier = searchShowFieldGroup.props.children[0];
       const searchSearchBox = searchShowFieldGroup.props.children[1];
       const searchSearchLabel = searchShowFieldGroup.props.children[2];
-      const searchPreloader = searchShowFieldGroup.props.children[3];
-      const searchSearchClose = searchShowFieldGroup.props.children[4];
+      const searchPreloader = searchSearchBox.props.children[0];
+      const searchSearchClose = searchShowFieldGroup.props.children[3];
 
       search.props.className.indexOf('search').should.be.at.least(0);
       searchShowFieldGroup.props.className.should.equal('search__show-field-group');
