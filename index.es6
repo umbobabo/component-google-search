@@ -69,11 +69,15 @@ export default class GoogleSearch extends React.Component {
       searchTerm: '',
       statusClassName: 'search--close',
     });
-    document.querySelector('.search input.gsc-input').value = '';
+    if (typeof document.querySelector('.search input.gsc-input') !== 'undefined') {
+      document.querySelector('.search input.gsc-input').value = '';
+    }
   }
 
   focusSearchField() {
-    document.querySelector('.search input.gsc-input').focus();
+    if (typeof document.querySelector('.search input.gsc-input') !== 'undefined') {
+      document.querySelector('.search input.gsc-input').focus();
+    }
   }
 
   ensureScriptHasLoaded() {
