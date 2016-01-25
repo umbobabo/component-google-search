@@ -43,7 +43,8 @@ export default class GoogleSearch extends React.Component {
     this.state = {
       statusClassName: 'search--close',
       searchTerm: '',
-      useFallback: false,
+      // useFallback by default on SS
+      useFallback: !(typeof window !== 'undefined'),
     };
   }
 
@@ -88,37 +89,28 @@ export default class GoogleSearch extends React.Component {
   }
 
   ensureScriptHasLoaded() {
-    const self = this;
-    function renderSearchElement() {
-      google.search.cse.element.render(
-        {
-          div: 'google-search-box',
-          tag: 'searchbox-only',
-          attributes: {
-            enableHistory: self.props.enableHistory,
-            noResultsString: self.props.noResultsString,
-            newWindow: self.props.newWindow,
-            gname: self.props.gname,
-            queryParameterName: self.props.queryParameterName,
-            language: self.props.language,
-            resultsUrl: self.props.resultsUrl,
-          },
-        });
-      self.setState({
-        useFallback: false,
-      });
-      self.focusSearchField();
-    }
-
     if (!this.script) {
       window.__gcse = {
         parsetags: 'explicit',
         callback: () => {
-          if (document.readyState === 'complete') {
-            renderSearchElement();
-          } else {
-            google.setOnLoadCallback(renderSearchElement, true);
-          }
+          google.search.cse.element.render(
+            {
+              div: 'google-search-box',
+              tag: 'searchbox-only',
+              attributes: {
+                enableHistory: self.props.enableHistory,
+                noResultsString: self.props.noResultsString,
+                newWindow: self.props.newWindow,
+                gname: self.props.gname,
+                queryParameterName: self.props.queryParameterName,
+                language: self.props.language,
+                resultsUrl: self.props.resultsUrl,
+              },
+            });
+          this.setState({
+            useFallback: false,
+          });
+          this.focusSearchField();
         },
       };
       const protocol = (document.location.protocol) === 'https:' ? 'https:' : 'http:';
