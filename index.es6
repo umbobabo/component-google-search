@@ -44,7 +44,7 @@ export default class GoogleSearch extends React.Component {
       statusClassName: 'search--close',
       searchTerm: '',
       // useFallback by default on SS
-      useFallback: !(typeof window !== 'undefined'),
+      useFallback: (typeof window === 'undefined'),
     };
   }
 
@@ -59,6 +59,8 @@ export default class GoogleSearch extends React.Component {
         statusClassName: 'search--open',
       });
       this.focusSearchField();
+    }).catch(() => {
+      this.focusSearchField();
     });
     // Required for preventDefault on Safari.
     return false;
@@ -69,14 +71,12 @@ export default class GoogleSearch extends React.Component {
       searchTerm: '',
       statusClassName: 'search--close',
     });
-    if(this.state.useFallback) {
+    if (this.state.useFallback) {
       if (typeof document.querySelector('.search input.gsc-input') !== 'undefined') {
         document.querySelector('.search input.gsc-input').value = '';
       }
-    } else {
-      if (typeof document.querySelector('.search .gsc-search-box input.gsc-input') !== 'undefined') {
-        document.querySelector('.search .gsc-search-box input.gsc-input').value = '';
-      }
+    } else if (typeof document.querySelector('.search .gsc-search-box input.gsc-input') !== 'undefined') {
+      document.querySelector('.search .gsc-search-box input.gsc-input').value = '';
     }
   }
 
@@ -90,23 +90,23 @@ export default class GoogleSearch extends React.Component {
 
   ensureScriptHasLoaded() {
     if (!this.script) {
+      const config = {
+        div: 'google-search-box',
+        tag: 'searchbox-only',
+        attributes: {
+          enableHistory: this.props.enableHistory,
+          noResultsString: this.props.noResultsString,
+          newWindow: this.props.newWindow,
+          gname: this.props.gname,
+          queryParameterName: this.props.queryParameterName,
+          language: this.props.language,
+          resultsUrl: this.props.resultsUrl,
+        },
+      };
       window.__gcse = {
         parsetags: 'explicit',
         callback: () => {
-          google.search.cse.element.render(
-            {
-              div: 'google-search-box',
-              tag: 'searchbox-only',
-              attributes: {
-                enableHistory: self.props.enableHistory,
-                noResultsString: self.props.noResultsString,
-                newWindow: self.props.newWindow,
-                gname: self.props.gname,
-                queryParameterName: self.props.queryParameterName,
-                language: self.props.language,
-                resultsUrl: self.props.resultsUrl,
-              },
-            });
+          google.search.cse.element.render(config);
           this.setState({
             useFallback: false,
           });
@@ -124,6 +124,7 @@ export default class GoogleSearch extends React.Component {
         });
         this.focusSearchField();
         console.error('An error occurs loading or executing Google Custom Search: ', e.message);
+        throw new Error(`An error occurs loading or executing Google Custom Search: ${e.message}`);
       });
     }
     return this.script;
