@@ -73,7 +73,7 @@ export default class GoogleSearch extends React.Component {
     });
     if (this.state.useFallback) {
       this.googleSearchInputFallbackInput.value = '';
-    } else if (typeof document.querySelector('.search .gsc-search-box input.gsc-input') !== 'undefined') {
+    } else if (this.googleSearchInput) {
       this.googleSearchInput.value = '';
     }
   }
@@ -81,7 +81,7 @@ export default class GoogleSearch extends React.Component {
   focusSearchField() {
     if (this.state.useFallback) {
       this.googleSearchInputFallbackInput.focus();
-    } else {
+    } else if (this.googleSearchInput) {
       this.googleSearchInput.focus();
     }
   }
@@ -108,9 +108,13 @@ export default class GoogleSearch extends React.Component {
           this.setState({
             useFallback: false,
           });
+          this.googleSearchInput = document.querySelector('.search .gsc-search-box input.gsc-input');
           this.focusSearchField();
         },
       };
+      // Loading this script it provide us the only additional functionality
+      // of autocompletition that is probably achievable by custom code using
+      // the Google Search API (Probably paid version).
       const protocol = (document.location.protocol) === 'https:' ? 'https:' : 'http:';
       const src = `${protocol}//${this.props.googleScriptUrl}?cx=${this.props.cx}`;
       this.script = promisescript({
