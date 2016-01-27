@@ -1,6 +1,5 @@
 @import "@economist/component-palette";
 @import "@economist/component-typography";
-@import "@economist/component-loading";
 
 .search {
   display: table;
@@ -142,7 +141,7 @@ td.gsc-input {
   border-top: 1px solid var(--search__border-top-color, var(--color-berlin));
 }
 
-input.gsc-input {
+.search input.gsc-input {
   border: none !important;
   color: var(--search__input-color, var(--color-kiev));
   padding: 0 !important;
