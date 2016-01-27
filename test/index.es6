@@ -32,7 +32,6 @@ describe(`A Google Search component`, () => {
       const searchMagnifier = searchShowFieldGroup.props.children[0];
       const searchSearchBox = searchShowFieldGroup.props.children[1];
       const searchSearchLabel = searchShowFieldGroup.props.children[2];
-      const searchPreloader = searchSearchBox.props.children[0];
       const searchSearchClose = searchShowFieldGroup.props.children[3];
 
       search.props.className.indexOf('search').should.be.at.least(0);
@@ -45,7 +44,6 @@ describe(`A Google Search component`, () => {
       searchSearchLabel.props.className.should.equal('search__search-label');
       searchSearchLabel.type.should.equal('a');
       searchSearchLabel.props.href.should.equal('http://www.economist.com/search/');
-      searchPreloader.props.className.should.equal('search__preloader');
       searchSearchClose.props.className.should.equal('search__search-close');
       searchSearchClose.type.should.equal('a');
       searchSearchClose.props.onClick.should.be.a('function');
