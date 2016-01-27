@@ -1,6 +1,5 @@
 import React from 'react';
 import Icon from '@economist/component-icon';
-import Loading from '@economist/component-loading';
 import promisescript from 'promisescript';
 /* eslint-disable no-undef, no-underscore-dangle, id-match, id-length, no-console */
 export default class GoogleSearch extends React.Component {
@@ -44,7 +43,8 @@ export default class GoogleSearch extends React.Component {
     this.state = {
       statusClassName: 'search--close',
       searchTerm: '',
-      fallbackHTML: '',
+      // useFallback by default on SS
+      useFallback: (typeof window === 'undefined'),
     };
   }
 
@@ -59,6 +59,8 @@ export default class GoogleSearch extends React.Component {
         statusClassName: 'search--open',
       });
       this.focusSearchField();
+    }).catch(() => {
+      this.focusSearchField();
     });
     // Required for preventDefault on Safari.
     return false;
@@ -69,77 +71,62 @@ export default class GoogleSearch extends React.Component {
       searchTerm: '',
       statusClassName: 'search--close',
     });
-    if (typeof document.querySelector('.search input.gsc-input') !== 'undefined') {
-      document.querySelector('.search input.gsc-input').value = '';
+    if (this.state.useFallback) {
+      this.googleSearchInputFallbackInput.value = '';
+    } else if (this.googleSearchInput) {
+      this.googleSearchInput.value = '';
     }
   }
 
   focusSearchField() {
-    if (typeof document.querySelector('.search input.gsc-input') !== 'undefined') {
-      document.querySelector('.search input.gsc-input').focus();
+    if (this.state.useFallback) {
+      this.googleSearchInputFallbackInput.focus();
+    } else if (this.googleSearchInput) {
+      this.googleSearchInput.focus();
     }
   }
 
   ensureScriptHasLoaded() {
-    const self = this;
-    function renderSearchElement() {
-      google.search.cse.element.render(
-        {
-          div: 'google-search-box',
-          tag: 'searchbox-only',
-          attributes: {
-            enableHistory: self.props.enableHistory,
-            noResultsString: self.props.noResultsString,
-            newWindow: self.props.newWindow,
-            gname: self.props.gname,
-            queryParameterName: self.props.queryParameterName,
-            language: self.props.language,
-            resultsUrl: self.props.resultsUrl,
-          },
-        });
-      self.focusSearchField();
-    }
-
-    function myCallback() {
-      if (document.readyState === 'complete') {
-        renderSearchElement();
-      } else {
-        google.setOnLoadCallback(renderSearchElement, true);
-      }
-    }
-
     if (!this.script) {
+      const config = {
+        div: 'google-search-box',
+        tag: 'searchbox-only',
+        attributes: {
+          enableHistory: this.props.enableHistory,
+          noResultsString: this.props.noResultsString,
+          newWindow: this.props.newWindow,
+          gname: this.props.gname,
+          queryParameterName: this.props.queryParameterName,
+          language: this.props.language,
+          resultsUrl: this.props.resultsUrl,
+        },
+      };
       window.__gcse = {
         parsetags: 'explicit',
-        callback: myCallback,
+        callback: () => {
+          google.search.cse.element.render(config);
+          this.setState({
+            useFallback: false,
+          });
+          this.googleSearchInput = document.querySelector('.search .gsc-search-box input.gsc-input');
+          this.focusSearchField();
+        },
       };
+      // Loading this script it provide us the only additional functionality
+      // of autocompletition that is probably achievable by custom code using
+      // the Google Search API (Probably paid version).
       const protocol = (document.location.protocol) === 'https:' ? 'https:' : 'http:';
       const src = `${protocol}//${this.props.googleScriptUrl}?cx=${this.props.cx}`;
       this.script = promisescript({
         url: src,
         type: 'script',
       }).catch((e) => {
-        // Let provide a fallback if we can't load the GCS script.
-        const fallbackHTML = `
-            <form acceptCharset="UTF-8" method="GET"
-              id="search-theme-form" action="${this.props.resultsUrl}"
-              class="gsc-input"
-            >
-              <input
-                type="text" maxLength="128" name="${this.props.queryParameterName}"
-                id="edit-search-theme-form-1"
-                value=""
-                title="Enter the terms you wish to search for."
-                class="gsc-input"
-              />
-              <input type="hidden" name="cx"
-                value="${this.props.cx}" id="edit-cx"
-              />
-            </form>`;
         this.setState({
-          fallbackHTML,
+          useFallback: true,
         });
+        this.focusSearchField();
         console.error('An error occurs loading or executing Google Custom Search: ', e.message);
+        throw new Error(`An error occurs loading or executing Google Custom Search: ${e.message}`);
       });
     }
     return this.script;
@@ -161,10 +148,23 @@ export default class GoogleSearch extends React.Component {
                   className="search__search-box"
                   id="google-search-box"
                 >
-                  <div className="search__preloader"><Loading /></div>
-                  <div className="fallback"
-                    dangerouslySetInnerHTML={{__html: this.state.fallbackHTML}}
-                  >
+                  <div className="fallback" style={{ display: (this.state.useFallback) ? 'block' : 'none' }}>
+                    <form acceptCharset="UTF-8" method="GET"
+                      id="search-theme-form" action={this.props.resultsUrl}
+                      className="gsc-input"
+                    >
+                      <input
+                        type="text" maxLength="128"
+                        name={this.props.queryParameterName}
+                        id="edit-search-theme-form-1"
+                        title="Enter the terms you wish to search for."
+                        className="gsc-input"
+                        ref={(ref) => this.googleSearchInputFallbackInput = ref}
+                      />
+                      <input type="hidden" name="cx"
+                        value={this.props.cx} id="edit-cx"
+                      />
+                    </form>
                   </div>
                 </div>
                 <a className="search__search-label"

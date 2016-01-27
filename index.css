@@ -136,12 +136,18 @@ td.gsc-input {
   vertical-align: middle;
 }
 
+.search--loading .search__magnifier,
+.search--open .search__magnifier,
+#google-search-box {
+  border-top: 1px solid var(--search__border-top-color, var(--color-berlin));
+}
+
 input.gsc-input {
   border: none !important;
   color: var(--search__input-color, var(--color-kiev));
   padding: 0 !important;
   outline: none;
-  font-size: 1em;
+  font-size: 2em;
 }
 
 .gsc-search-button,

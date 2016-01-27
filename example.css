@@ -1,5 +1,9 @@
 @import './index';
 
+body {
+  background: white !important;
+}
+
 .search__example-container {
   position: relative;
   width: 100%;
