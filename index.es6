@@ -72,19 +72,17 @@ export default class GoogleSearch extends React.Component {
       statusClassName: 'search--close',
     });
     if (this.state.useFallback) {
-      if (typeof document.querySelector('.search input.gsc-input') !== 'undefined') {
-        document.querySelector('.search input.gsc-input').value = '';
-      }
+      this.googleSearchInputFallbackInput.value = '';
     } else if (typeof document.querySelector('.search .gsc-search-box input.gsc-input') !== 'undefined') {
-      document.querySelector('.search .gsc-search-box input.gsc-input').value = '';
+      this.googleSearchInput.value = '';
     }
   }
 
   focusSearchField() {
     if (this.state.useFallback) {
-      document.querySelector(`.search input.gsc-input`).focus();
+      this.googleSearchInputFallbackInput.focus();
     } else {
-      document.querySelector(`.search .gsc-search-box input.gsc-input`).focus();
+      this.googleSearchInput.focus();
     }
   }
 
@@ -152,10 +150,12 @@ export default class GoogleSearch extends React.Component {
                       className="gsc-input"
                     >
                       <input
-                        type="text" maxLength="128" name={this.props.queryParameterName}
+                        type="text" maxLength="128"
+                        name={this.props.queryParameterName}
                         id="edit-search-theme-form-1"
                         title="Enter the terms you wish to search for."
                         className="gsc-input"
+                        ref={(ref) => this.googleSearchInputFallbackInput = ref}
                       />
                       <input type="hidden" name="cx"
                         value={this.props.cx} id="edit-cx"
