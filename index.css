@@ -169,12 +169,3 @@ td.gsc-input {
   justify-content: center;
 }
 
-@media (width<=767px){
-  .search__search-label {
-    display: none;
-  }
-  .search__magnifier {
-    min-width: 50px;
-    text-align: center;
-  }
-}
